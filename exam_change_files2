@@ -1,0 +1,56 @@
+Why the "g" is important in sed
+
+The g flag at the end of the sed substitution command stands for global.
+
+If you omit the g flag, sed will only replace the first occurrence of the word on each line. If the word "Scotland" appears three times in a single sentence on one line, only the first one becomes "Tralee". By adding the g, you instruct sed to replace every single instance of the word across the entire line.
+The Completed cweb3.sh Script
+
+Here is the completed script with the red bracket placeholders filled in and the file replacement logic added.
+
+Pay special attention to the double quotes (") used in the sed command. Double quotes allow the shell to expand the variables $OLDSTRING and $NEWSTRING into their actual values. If you used single quotes ('), sed would literally look for the text "$OLDSTRING".
+Bash
+
+#!/bin/bash
+
+# Read in the arguments:
+OLDSTRING=$1
+NEWSTRING=$2
+
+# the following gets rid of the first two arguments
+shift
+shift
+
+# from now on, "all arguments" means "all arguments from 3rd one on"
+# go through all arguments one by one:
+
+for x in "$@"
+do
+ echo "We need to change $OLDSTRING to $NEWSTRING in file $x" 
+ ls -l $x 
+ 
+ # Send contents to sed, swap the strings, and write to tmpfile
+ cat $x | sed -e "s|$OLDSTRING|$NEWSTRING|g" > tmpfile
+ 
+ # Overwrite the original file with the modified temporary file
+ cp tmpfile $x
+ 
+ # Do another ls -l to show the file after it has been changed
+ echo "After update:"
+ ls -l $x
+ echo 
+done
+
+# Clean up the temporary file when the loop is finished
+rm tmpfile
+
+Testing Steps to Verify
+
+Before uploading to Einstein, run the sequence exactly as your lab outlines to ensure the temporary file isn't wiping your data (size zero):
+
+    ./cweb3.sh Scotland Tralee complete.html
+
+    grep "Tralee" complete.html (Verify the replacement worked)
+
+    ./cweb3.sh Tralee Scotland complete.html (Revert the change)
+
+    ./cweb3.sh Scotland Tralee *html (Test the wildcard functionality)
