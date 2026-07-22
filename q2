@@ -1,0 +1,79 @@
+PATH and Programs
+
+    What is the environment variable $PATH?
+    It is a system variable containing a colon-separated list of directories. When you type a command (like ls or rm) without specifying its exact location, the shell searches through these directories from left to right to find the executable program.
+
+    How do you output the value of $PATH?
+    echo $PATH
+
+    How do you output the value of $PATH and translate the ":" characters to newline characters? (Challenge)
+    echo $PATH | tr ':' '\n'
+    (The tr command "translates" or replaces the first character with the second).
+
+    Find what directory "rm" is in.
+    which rm
+    (Alternatively, type rm or command -v rm will also work).
+
+    Show the file size of the "rm" program.
+    You can combine ls -l with the which command using command substitution:
+    ls -l $(which rm)
+    The file size will be the number displayed before the date/time in the output.
+
+GUI Programs and Background Execution
+
+    Issuing the command gnome-text-editor will do what?
+    It launches the GNOME text editor application. However, it "ties up" your terminal; you will not get your command prompt back to type new commands until you close the text editor.
+
+    Issuing the command gnome-text-editor & will do what?
+    The ampersand (&) runs the program in the background. The GNOME text editor will open, but your terminal will immediately give you back the prompt so you can continue typing other commands.
+
+    Issuing the command ls will do what?
+    It lists the contents of the current directory, prints them to the screen, and immediately returns you to the prompt.
+
+    Issuing the command ls & will do what?
+    It runs ls in the background. Because ls executes almost instantly and outputs directly to the screen, you will see the directory contents print out, usually mixed slightly with the immediate return of your command prompt. It functions identically to standard ls, just with slightly messier visual output.
+
+Redirection
+
+    What is the effect of the following command? ls -al > myfile
+    It gets a long-format list of all files (including hidden ones) in the current directory, but instead of showing it on the screen, it redirects (>) that output into a newly created text file named myfile. If myfile already existed, its previous contents are completely overwritten.
+
+    What will this do? cd followed by ls -alR
+    It takes you to your home directory, and then lists all files and folders recursively (-R). This means it will list the contents of your home folder, plus every file in every subfolder inside it, generating a massive list on your screen.
+
+    What will this do? cd / followed by ls -alR
+    It takes you to the root of the file system, and attempts to recursively list every single file on the entire computer. You will see endless scrolling text mixed with "Permission denied" errors for system folders you don't have access to read.
+
+    What will this do? cd followed by ls -al > outputfile.log
+    It takes you to your home directory and saves a detailed list of its contents into a file named outputfile.log located inside that same home directory.
+
+    What will this do? cd / followed by ls -al > outputfile.log
+    It takes you to the root directory and attempts to save the list of files into a file named outputfile.log inside the root directory. This will fail with a "Permission denied" error, as standard users cannot write files directly to /.
+
+    What will this do? cd / followed by ls -al > $HOME/outputfile.log
+    It takes you to the root directory, lists its contents, and successfully saves that output into outputfile.log located in your home directory ($HOME), where you do have write permissions.
+
+    Typing the command man ls > ls.txt does what?
+    It reads the system manual page for the ls command and saves the text of that manual into a file named ls.txt in your current directory.
+
+    Typing the command man man > man does what?
+    It reads the manual page that explains how to use the man command itself, and saves it into a file literally named man in your current directory.
+
+Path Precedence (Hard to Test)
+
+    If there are "ls" programs in multiple directories in the PATH, which one runs when you type "ls"?
+    The shell reads the $PATH from left to right. It will execute the first one it finds and ignore the rest.
+
+    If you make your own "ls" program, put it in your own directory, and change the PATH to include that directory, which one runs?
+    It depends on where you added your directory to the $PATH.
+
+        If you added your directory to the end of the path (e.g., PATH=$PATH:/your/directory), the system's normal ls runs, because the shell finds /usr/bin/ls before it reaches your directory.
+
+        If you added your directory to the beginning of the path (e.g., PATH=/your/directory:$PATH), your ls program will run.
+
+    How can you make sure your "ls" program runs instead?
+    There are two ways:
+
+        Add your directory to the very beginning of the $PATH variable so it is searched first.
+
+        Don't rely on the $PATH at all. Run your program by specifying its exact location, either with an absolute path (/home/username/my_programs/ls) or a relative path (./ls if you are already in that directory).
