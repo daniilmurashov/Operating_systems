@@ -1,0 +1,115 @@
+Here are the correct answers to your CA170 multiple-choice questions:
+
+What is this script doing? grep string file > /dev/null \n if test "$?" = "0"
+
+    Testing whether or not the string occurs in the file, without listing the lines on which it does.
+    (It discards the output to /dev/null and then checks the exit status $? of the grep command to see if a match was found).
+
+In my Shakespeare directory, you want to count on how many lines the string "King" appears in Shakespeare. Which of the following will answer that question?
+
+    grep King */act* | wc -l
+
+One of the following file protections will break your web page:
+
+    -rwxr-x--x
+    (The web server runs as a different user ("others/world") and requires read permission to serve the file. The --x at the end means it can execute but cannot read it).
+
+Which of the following fails to find lines containing "Scotland" in a group of files?
+
+    grep scotland *html
+    (Because grep is case-sensitive by default).
+
+As a result of the "unused RAM is wasted RAM" idea, we may:
+
+    Keep data from terminated processes in memory. And pre-load processes that may be run later.
+    (Modern OSes use unused memory as a cache to speed up the system).
+
+This shell conditional: if test "$1" = "1" is true if:
+
+    The first argument is the string "1".
+    ($1 refers to the first positional argument passed to the script).
+
+This character should be avoided in Unix filenames:
+
+    * (star)
+
+This command: sed -e 's|<|\&lt;|g'
+
+    is displaying the start of HTML tags but not getting them interpreted.
+
+On Linux, when you type a normal command, it should be in the PATH to run. Yet when you run ps -f you see a program running that is not in the PATH. How can this happen?
+
+    You can run programs that are not in the PATH.
+    (By providing the absolute or relative path directly, e.g., ./my_script.sh or /opt/bin/program).
+
+Swapping a process or part of a process to disk works with:
+
+    Run-time binding only.
+    (Because when the process is swapped back into memory, it will likely be put in a different physical location than before).
+
+With compile-time binding, the memory locations used can be changed if the program is re-compiled. Why does the OS not do this?
+
+    The source code may not be available.
+
+In a modern OS, one of these is false:
+
+    My running program is normally saved to disk when I shut down.
+    (RAM is volatile; running state is wiped on standard shutdown, not saved to the disk).
+
+I am in the directory /stuff/and/things and I type: cd ../../../more/things - What directory am I in now?
+
+    /more/things
+
+You write a simple program in assembly language (or "machine code", or "native instructions"). You then want to run the program on a different type of machine (different chip). Which is normally true:
+
+    The program must be re-written.
+    (Assembly/machine code is architecture-specific. Code for an Intel chip will not run natively on an ARM chip).
+
+I am in the directory /stuff/and/things and I type: cd more/things - What directory am I in now?
+
+    /stuff/and/things/more/things
+    (Because there is no leading slash, it acts as a relative path moving deeper into the current directory).
+
+Linux dominates supercomputers and other specialist computer niches because:
+
+    Open source Linux can be customised to unusual hardware.
+
+One of these is true.
+
+    A command-line system is easier to automate than a GUI system.
+
+This program: function f() { f(); } f();
+
+    Runs time-sliced until it crashes by running out of stack space.
+    (This is an infinite recursion that will cause a Stack Overflow).
+
+The relationship of Paging to Swapping is:
+
+    Disk is used as a slow-speed overflow of memory, so that the system slows down gracefully rather than suddenly.
+
+The commands "cd" followed by "cd public_html" followed by "mkdir ../stuff" make a directory called:
+
+    $HOME/stuff
+
+We are searching for text in chapters of a book, called names like chap17.html. One of these is definitely not right:
+
+    grep Scotland \*chap*html
+    (The backslash escapes the first star, making it literally look for a file whose name starts with an asterisk character).
+
+A program is a stream of instructions to be executed. When an OS runs a program, it starts the CPU executing that stream of instructions. How does the OS ever get control of the machine back?
+
+    The program will receive periodic timer interrupts.
+    (Hardware interrupts force the CPU to return control to the OS scheduler).
+
+What will this Shell script do? for i in * \n do \n rm i \n done
+
+    Remove a file called i, perhaps multiple times.
+    (Because the script says rm i instead of rm $i, it literally targets a file named "i" instead of the variable's value).
+
+When we run multiple programs at the same time, we need:
+
+    Memory protection.
+
+On a multi-user system, when one user's program divides by zero:
+
+    An interrupt is generated and the program is terminated.
