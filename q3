@@ -28,7 +28,7 @@ Listing and Finding Specific Files
     Assuming your Shakespeare directory is in your home folder:
     ls ~/Shakespeare/*/act6.html
 
-Using grep to Search Inside Files
+Using grep to Search Inside Files!!! Pipe goes strictly from left to right 
 
     Use grep to find all lines where "Ireland" appears in the plays (only in complete.html).
     grep "Ireland" */complete.html
