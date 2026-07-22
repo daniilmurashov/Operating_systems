@@ -1,0 +1,89 @@
+Here are the command lines and explanations to accomplish those file-searching and manipulation tasks.
+Searching and Counting Directories
+
+    How many sub-directories does it have? Use find and pipe to wc.
+    find . -type d | wc -l
+
+    Why will the human remove one from the count?
+    The find . command includes the current directory (.) in its output. Subtracting one gives you the true count of the sub-directories inside it.
+
+Listing and Finding Specific Files
+
+    List all files called act1.html one level down from this directory.
+    ls */act1.html
+
+    Find Act 3 of Macbeth and show its size.
+    To find it and show the size in a detailed list format:
+    ls -l Macbeth/act3.html
+    (If you aren't sure of the exact folder name, you could use ls -l */act3.html | grep -i macbeth)
+
+    List all "Act 6" files in all plays.
+    ls */act6.html
+    (This will likely return an error like "No such file or directory," since Shakespeare's plays only go up to 5 acts).
+
+    Write a command to check if any "Act 7" files exist.
+    ls */act7.html
+
+    From your home directory, list all the "Act 6" files without changing directory.
+    Assuming your Shakespeare directory is in your home folder:
+    ls ~/Shakespeare/*/act6.html
+
+Using grep to Search Inside Files
+
+    Use grep to find all lines where "Ireland" appears in the plays (only in complete.html).
+    grep "Ireland" */complete.html
+
+    In how many lines of the plays does "Ireland" appear? Use grep and wc.
+    grep "Ireland" */complete.html | wc -l
+
+    In how many different plays does "Ireland" appear? Use grep with a certain option.
+    grep -l "Ireland" */complete.html | wc -l
+    (The -l option tells grep to only output the names of the files that contain a match, rather than the matching lines themselves. Counting those files gives you the number of plays).
+
+    Show all lines that contain "Scot" but not "Scots", "Scotland", or "Scottish".
+    grep "Scot" */complete.html | grep -v "Scots" | grep -v "Scotland" | grep -v "Scottish"
+    (The -v option stands for "invert match"—it filters out lines containing those specific strings).
+
+    How many times does the string "Scotland" appear in Act 3 of a Shakespeare play?
+    grep -o "Scotland" */act3.html | wc -l
+    (Using the -o option is important here. Standard grep outputs the whole line. If "Scotland" appears twice on the same line, grep | wc -l would only count it once. -o puts every exact match on its own line, giving you a true count).
+
+Search Engine vs. Command Line
+
+    How would you find the answer to the previous using Google or other search engine?
+    You would use site-specific operators combined with exact phrase matching on a dedicated Shakespeare text site. For example: "Scotland" "Act 3" site:shakespeare.mit.edu. However, standard search engines are poor at cross-referencing specific structural file locations (like */act3.html). To get an exact count easily, you would need to use a specialized database like Open Source Shakespeare, which allows parameter-based text searches.
+
+    List all the plays in which the word "idiot" occurs.
+    grep -l "idiot" */complete.html
+
+    List all the plays in which the word "idiot" does not occur.
+    grep -L "idiot" */complete.html
+    (The capital -L option does the exact opposite of -l; it lists files that do not contain the match).
+
+Web Server Test Suite Task
+
+    Go to the test suite and list all web pages (HTML files) one level down.
+    Bash
+
+    cd /users/tutors/mhumphrysdculab/share/testsuite
+    ls */*.html
+
+    How do you search for the string "http://computing.dcu.ie/~humphrys/" in all the web pages?
+    grep -F "[http://computing.dcu.ie/~humphrys/](http://computing.dcu.ie/~humphrys/)" */*.html
+    (Using -F tells grep to treat the string as fixed, literal text rather than a regular expression, which prevents special characters like . and ~ from causing unexpected behavior).
+
+    How would you find that string in all the web pages using a Web browser? Or using a text editor?
+
+        Web Browser: You generally cannot do this efficiently across an entire server via a browser. You would have to load every individual page, view the page source (Ctrl+U), and use the browser's "Find" feature (Ctrl+F).
+
+        Text Editor: Modern text editors (like VS Code, Notepad++, or Sublime Text) have a "Find in Files" feature (usually Ctrl+Shift+F). You select the parent folder, input the string, and the editor will search the contents of every file in that directory structure.
+
+File and Directory Size
+
+    List the "testsuite" directories sorted by size. (Use du and sort).
+    du -sk * | sort -n
+    (This gets the disk usage in Kilobytes (-k) for each item, without showing subdirectories (-s), and sorts them numerically (-n)).
+
+    List the "act" files in Shakespeare sorted by size. (Use ls or du, along with sort).
+    du -sk */act*.html | sort -n
+    (Alternatively, you can just use ls directly: ls -S */act*.html sorts by file size largest to smallest).
