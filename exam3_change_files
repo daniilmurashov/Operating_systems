@@ -1,0 +1,53 @@
+The Completed gweb4.sh Script
+
+This version contains all the required substitutions, including the HTML escaping (sed), string splitting (cut), and the specific absolute directory paths required by Einstein.
+Bash
+
+#!/bin/bash
+
+# 1. Change to the Einstein testing directory
+cd /shared/humphrys/shakespeare 
+
+# 2. Define the function to make the output clickable
+clickable()
+{
+ while read line
+ do
+  # Extract everything BEFORE the first colon (the filename)
+  file=`echo "$line" | cut -d ':' -f 1`
+  
+  # Extract everything AFTER the first colon (the actual text hit)
+  # -f 2- means field 2 and everything after it, in case the text itself contains a colon
+  hit=`echo "$line" | cut -d ':' -f 2-`
+ 
+  # Apply the absolute Einstein prefix so the links work from $HOME/gweb.html
+  echo "<a href='/shared/humphrys/shakespeare/$file'>$file</a>: $hit <br>"
+ done
+}
+
+# 3. Redirect all subsequent script output to the target file
+exec > "$HOME/gweb.html"
+
+# 4. Output the HTML preformatted tag
+echo "<pre>"
+
+# 5. Search, escape HTML brackets so they print literally, and pipe to the clickable function
+# The sed command replaces < with &lt; and > with &gt;
+grep -i "$1" */*html | sed -e 's/</\&lt;/g' -e 's/>/\&gt;/g' | clickable
+
+# 6. Close the preformatted tag
+echo "</pre>"
+
+How the Missing Parts Work
+
+    [sed command]: sed -e 's/</\&lt;/g' -e 's/>/\&gt;/g'
+    Because the text being searched is raw HTML, it contains tags like <b> or <i>. If you output these directly into your gweb.html file, the browser will try to render them, making a mess of the page. This sed command converts the brackets into HTML entities (&lt; and &gt;), forcing the browser to display them as literal text.
+
+    [cut before the colon]: cut -d ':' -f 1
+    The -d ':' tells cut to use the colon as the delimiter (the separator between fields). -f 1 grabs the very first field, which grep uses for the filename.
+
+    [cut after the colon]: cut -d ':' -f 2-
+    The -f 2- tells cut to grab the second field and everything after it. This prevents the text from being cut off early if a character in the Shakespeare play happens to use a colon in their dialogue.
+
+    [some other prefix]: /shared/humphrys/shakespeare/
+    Because your script writes the output web page to $HOME, a relative link like <a href='macbeth/complete.html'> would make the browser look inside $HOME/macbeth/. By hardcoding the absolute path /shared/humphrys/shakespeare/ in front of the filename, the browser knows exactly where to find the target files on the Einstein server.
