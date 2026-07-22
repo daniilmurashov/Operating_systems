@@ -1,0 +1,73 @@
+1. Getting Started: Fetching the Test File
+
+Before writing the script, fetch a live copy of the page so you have something to test against locally. Run this on your command line:
+Bash
+
+wget -q -O thepage.htm https://stockanalysis.com/stocks/goog/
+
+(Open thepage.htm in a text editor or use grep to quickly verify it contains the stock price and the text-4xl font-bold class).
+2. The Einstein Lab Script (getprice6.sh)
+
+Create your script: nano getprice6.sh
+
+Here is the complete script built exactly to your recipe. By chaining the commands with pipes (|) and spreading them across multiple lines using the backslash (\), the code remains highly readable.
+Bash
+
+#!/bin/bash
+
+cat thepage.htm | \
+tr -d '\r' | \
+tr -d '\n' | \
+sed -e 's/<div/\n<div/g' | \
+sed -e 's/<\/div>/<\/div>\n/g' | \
+grep "text-4xl font-bold" | \
+sed -e 's/<\/div>//g' | \
+sed -e 's/^.*>//g'
+
+How the Recipe Works:
+
+    tr -d '\r': Deletes all carriage returns (Windows EOL characters).
+
+    tr -d '\n': Deletes all standard newlines, crushing the entire HTML file into one massive, unbroken line.
+
+    sed -e 's/<div/\n<div/g': Injects a newline right before every <div tag starts.
+
+    sed -e 's/<\/div>/<\/div>\n/g': Injects a newline right after every </div> tag ends. (At this point, every div block is neatly isolated on its own line).
+
+    grep "text-4xl font-bold": Throws away all lines except the one containing the specific class for the stock price.
+
+    sed -e 's/<\/div>//g': Strips the closing </div> tag off the end of our isolated line.
+
+    sed -e 's/^.*>//g': The regular expression ^.*> means "Start at the beginning of the line (^), match any number of characters (.*), all the way up to the last closing bracket (>)". By replacing all of that with nothing, it strips away the opening <div class="..."> tag, leaving only the pure number.
+
+Make it executable and test:
+Bash
+
+chmod +x getprice6.sh
+./getprice6.sh
+
+(If it outputs just the number, e.g., 156.47, you are ready to upload to Einstein).
+3. Afterwards: The Real-World Script (getprice)
+
+Once you have your marks, you can modify the script for real-world use. This version drops the requirement for a temporary file, fetches the page silently on the fly, and accepts any stock ticker as an argument.
+
+Create a file named getprice in your $HOME/bin directory:
+Bash
+
+#!/bin/bash
+
+# Check if a stock ticker was provided
+if [ -z "$1" ]; then
+    echo "Usage: getprice <ticker> (e.g., getprice msft)"
+    exit 1
+fi
+
+# Fetch the URL directly into the pipeline
+wget -q -O - "https://stockanalysis.com/stocks/$1/" | \
+tr -d '\r' | \
+tr -d '\n' | \
+sed -e 's/<div/\n<div/g' | \
+sed -e 's/<\/div>/<\/div>\n/g' | \
+grep "text-4xl font-bold" | \
+sed -e 's/<\/div>//g' | \
+sed -e 's/^.*>//g'
