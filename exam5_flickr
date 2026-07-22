@@ -1,0 +1,82 @@
+1. The Lab Exam Script (flickr6.sh)
+
+First, fetch a test file on your command line so you can test locally:
+Bash
+
+wget -q -O feed.json "https://api.flickr.com/services/feeds/photos_public.gne?format=json&tags=dublin"
+
+Next, create your script: nano flickr6.sh
+
+The character you need to remove using tr is the backslash (\). In JSON, HTML characters like quotes (") and forward slashes (/) are "escaped" by putting a backslash in front of them (e.g., \" and \/). Deleting all backslashes instantly converts the encoded JSON strings back into valid, readable HTML.
+
+Here is the complete script for Einstein:
+Bash
+
+#!/bin/bash
+
+# Define the extra spacing and title HTML
+EXTRA="<hr style='margin-top:70'><h1> next photo </h1>"
+
+# Redirect all script output to the required file
+exec > "$HOME/flickr.html"
+
+# Process the local JSON feed
+cat feed.json | \
+egrep '"description":|"tags":' | \
+tr -d '\\' | \
+sed -e "s|<p>|$EXTRA<p>|"
+
+How it works:
+
+    exec > "$HOME/flickr.html" captures everything that would normally print to the screen and writes it to the HTML file.
+
+    egrep '"description":|"tags":' filters the file down to only the lines containing the image payloads and their associated tags.
+
+    tr -d '\\' deletes the backslashes, decoding the HTML snippets so the browser can render the images. (Note: We use \\ because bash uses the backslash as an escape character itself, so we have to escape the escape character).
+
+    sed -e "s|<p>|$EXTRA<p>|" finds the first instance of a <p> tag on each line and injects the $EXTRA formatting right before it. By omitting the g flag at the end of the sed command, it ensures this replacement only happens once per line, keeping Einstein happy.
+
+Make it executable and test:
+Bash
+
+chmod +x flickr6.sh
+./flickr6.sh
+
+2. The Real-World Script (flickr)
+
+Once you pass the Einstein tests, you can create a dynamic version of the script that accepts any tag, downloads the feed on the fly, and generates the page.
+
+Create this in your $HOME/bin directory: nano $HOME/bin/flickr
+Bash
+
+#!/bin/bash
+
+# Check if the user provided a tag
+if [ -z "$1" ]; then
+    echo "Usage: flickr <tag> (e.g., flickr paris)"
+    exit 1
+fi
+
+EXTRA="<hr style='margin-top:70'><h1> next photo </h1>"
+
+# Redirect output to the HTML file
+exec > "$HOME/flickr.html"
+
+# Fetch the feed directly using the command-line argument ($1)
+# The URL must be in quotes because the '&' character will break the shell command otherwise
+URL="https://api.flickr.com/services/feeds/photos_public.gne?format=json&tags=$1"
+
+wget -q -O - "$URL" | \
+egrep '"description":|"tags":' | \
+tr -d '\\' | \
+sed -e "s|<p>|$EXTRA<p>|"
+
+# Output a success message to the screen (by sending it to standard error)
+echo "Webpage generated at $HOME/flickr.html" >&2
+
+Make it executable:
+Bash
+
+chmod +x $HOME/bin/flickr
+
+You can now run flickr belfast or flickr dogs from anywhere, and it will instantly build a gallery of the latest photos to $HOME/flickr.html.
