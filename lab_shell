@@ -1,0 +1,79 @@
+Setup (One-Time)
+
+First, ensure your personal bin directory exists and is secured from other users:
+Bash
+
+mkdir -p $HOME/bin
+chmod go-rwx $HOME/bin
+
+Note: If typing echo $PATH does not show your bin directory (e.g., /home/yourusername/bin), you will need to add export PATH="$HOME/bin:$PATH" to your hidden ~/.bashrc or ~/.profile file so the system knows to look there for your scripts.
+Exercise: The d Script
+
+This script creates a quick, two-letter shortcut for a detailed file listing, passing along any extra directories or options you type.
+
+    Create and open the file:
+    Bash
+
+    nano $HOME/bin/d
+
+    Add the code:
+    Bash
+
+    #!/bin/bash
+    ls -l $*
+
+    (The #!/bin/bash is called a "shebang." It tells the system exactly which interpreter to use to run the script. While optional for very basic commands, it is a crucial habit for shell scripting).
+
+    Save and exit (In nano, press Ctrl+O to save, Enter to confirm, then Ctrl+X to exit).
+
+    Make the file executable:
+    Bash
+
+    chmod +x $HOME/bin/d
+
+    Run it:
+    Bash
+
+    d
+    d /etc
+
+Exercise: The gnews Script
+
+This script fetches the live HTML of the RTE News homepage and searches for the word you provide.
+
+    Create and open the file:
+    Bash
+
+    nano $HOME/bin/gnews
+
+    Add the code:
+    Bash
+
+    #!/bin/bash
+
+    # Check if the user actually provided an argument
+    if [ -z "$1" ]; then
+        echo "Usage: gnews <search_term>"
+        exit 1
+    fi
+
+    # Fetch the page and search for the term
+    # -q makes wget run quietly (no progress bars)
+    # -O - tells wget to output the downloaded text directly to the screen (stdout)
+    # grep -i makes the search case-insensitive
+    wget -q -O - https://www.rte.ie/news/ | grep -i "$1"
+
+    Save and exit.
+
+    Make it executable:
+    Bash
+
+    chmod +x $HOME/bin/gnews
+
+    Run it:
+    Bash
+
+    gnews Dublin
+    gnews weather
+
+    Key insight: Because wget pulls down raw website code, your terminal will print out the actual HTML tags (like <h2> or <a>) surrounding the word you searched for.
