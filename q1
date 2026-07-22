@@ -1,0 +1,86 @@
+Here are the answers to your command-line questions, broken down by the concepts they cover.
+cd and Directories
+
+    Typing pwd does what?
+    It stands for "Print Working Directory." It outputs the absolute path of the directory you are currently in (e.g., /home/username/Documents).
+
+    Typing cd does what?
+    When typed by itself without any arguments, it changes your current directory to your home directory (equivalent to cd ~).
+
+    Typing cd followed by pwd does what?
+    It takes you to your home directory, and then prints the absolute path of that home directory to the screen.
+
+    Typing cd followed by cd .. does what?
+    It takes you to your home directory, and then moves you one level up into its parent directory. (For example, if your home is /home/username, you will end up in /home).
+
+    Typing cd followed by cd .. followed by pwd does what?
+    It takes you to your home directory, moves you up one level to the parent directory, and then prints the path of that parent directory to the screen.
+
+    Typing cd followed by mkdir stuff does what?
+    It returns you to your home directory, and then creates a new folder named stuff directly inside it.
+
+    Do it again. What happens? Why?
+    You will get an error message like mkdir: cannot create directory ‘stuff’: File exists. This happens because you cannot have two items with the exact same name in the same location.
+
+    Typing cd followed by mkdir ../stuff does what? Why?
+    It takes you to your home directory, and then attempts to create a directory named stuff in the parent directory (..).
+    Note: On most systems, this will result in a "Permission denied" error because standard users do not have administrative rights to modify the parent /home or /Users directory.
+
+Relative and Absolute Addressing
+
+(Assuming you start in your home directory, e.g., /home/user)
+
+    I type: cd public_html. What directory am I in now?
+    /home/user/public_html. This is a relative path because it looks for the folder starting from where you currently are.
+
+    I type: cd /bin. What directory am I in now?
+    /bin. This is an absolute path because it starts with a forward slash (/), meaning it ignores where you currently are and navigates directly from the root of the entire system.
+
+    I type: cd bin. What directory am I in now?
+    /home/user/bin. This is another relative path, taking you to a folder named bin located inside your home directory.
+
+    I type: cd ../bin. What happens? Why?
+    You will likely get an error saying bash: cd: ../bin: No such file or directory.
+    Why: .. moves you up to the parent directory (/home), and then it looks for a folder named bin inside that parent. Since /home/bin doesn't usually exist, the command fails.
+
+System Directories
+
+    Typing cd / causes what to happen?
+    It takes you to the "root" directory, which is the absolute top level of the entire file system hierarchy.
+
+    Typing cd / followed by cd .. causes what to happen?
+    You stay in the root directory. Because / is the very top of the system, it has no parent. Running cd .. at the root simply keeps you at the root.
+
+    The commands cd / followed by mkdir stuff are run, what happens?
+    You move to the root directory, and then the mkdir command fails with a "Permission denied" error. Only the system administrator (root user) has the authority to create files or folders at the base of the file system.
+
+    Typing cd \ causes what to happen? (Advanced)
+    In Unix-like systems, the backslash (\) is an escape character. If you type cd \ and hit Enter, the shell thinks you are trying to "escape" the Enter key to continue your command on the next line. You will see a > prompt waiting for you to finish typing the command.
+
+    What is the directory /bin for?
+    It stands for "binaries." It contains essential executable programs and commands (like ls, cp, mkdir, bash) that all users need, and that the system requires to boot up properly.
+
+    How do you list the files in /bin?
+    ls /bin
+
+    Write a command line to count the number of files in /bin. (Advanced)
+    ls /bin | wc -l
+    (This lists the contents of /bin and "pipes" that output into wc -l, which stands for "word count - lines".)
+
+The ls Command
+
+    The command ls -l does what?
+    It lists files in "long format." Instead of just names, you see detailed information for each file: permissions, number of hard links, owner name, group name, file size, and the date/time it was last modified.
+
+    The command ls -a does what?
+    It lists "all" files, including hidden files and directories (which are simply files whose names start with a period, like .bashrc).
+
+    The command ls -R does what?
+    It lists files "recursively." It will show you the contents of your current directory, plus the contents of every folder inside it, and every folder inside those folders, all the way down.
+
+    The command ls -d does what?
+    It lists directories themselves rather than their contents. If you type ls -d folder_name, it just outputs folder_name instead of showing you what is inside it. It is most often combined with -l (e.g., ls -ld folder_name) to check the permissions of a folder itself.
+
+    Write a command line to check whether /bin is actually a shortcut to a different location. (Advanced)
+    ls -ld /bin
+    (If it is a shortcut—called a symbolic link—the first character of the output will be an l, and the end of the line will show an arrow pointing to the real location, like /bin -> usr/bin.)
