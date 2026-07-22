@@ -1,0 +1,48 @@
+ls3.sh
+
+This script lists only the files ending in .html in the directory you are currently in.
+Bash
+
+#!/bin/bash
+ls *.html
+
+ls4.sh
+
+This script lists .html files located in the sub-directories of your current directory. (This matches the wildcard pattern used in your previous Shakespeare exercises).
+Bash
+
+#!/bin/bash
+ls */*.html
+
+dr.sh
+
+The -r flag reverses the standard alphabetical sorting order of the ls command.
+Bash
+
+#!/bin/bash
+ls -r
+
+du2.sh
+
+This calculates the disk usage (du) for items in the current directory, summarizing them (-s), displaying in kilobytes (-k), and then piping that output into sort to order them numerically (-n) by size.
+Bash
+
+#!/bin/bash
+du -sk * | sort -n
+
+(Note: If the Einstein test strictly wants ONLY sub-directories and no individual files, use du -sk */ | sort -n instead).
+grep2.sh
+
+This searches for the exact lowercase string "queen". Remember that grep is case-sensitive by default. As requested, the target file is set to macbeth.htm for the upload.
+Bash
+
+#!/bin/bash
+grep "queen" macbeth.htm
+
+grep3.sh
+
+To ignore case and find "Queen", "QUEEN", or "queen", you add the -i (ignore case) switch.
+Bash
+
+#!/bin/bash
+grep -i "queen" macbeth.htm
