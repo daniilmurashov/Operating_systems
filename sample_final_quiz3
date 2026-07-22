@@ -1,0 +1,117 @@
+Which of the following is an unusual permission field for a UNIX file:
+
+    -rwx---r-x
+    (It is very unusual to grant read and execute permissions to "others" / the general public, while completely denying those same permissions to the file's "group").
+
+When a program is started:
+
+    A copy of it is made in a volatile medium.
+    (The executable file is copied from the non-volatile disk into volatile RAM).
+
+This program: function f() { f(); } f();
+
+    Runs time-sliced until it crashes by running out of stack space.
+    (This is an infinite recursion. It won't freeze the whole system because of time-slicing, but it will eventually consume its allocated stack memory and crash with a Stack Overflow).
+
+Linux dominates supercomputers and other specialist computer niches because:
+
+    Open source Linux can be customised to unusual hardware.
+
+One of the following file protections will break your web page:
+
+    -rwxr-x--x
+    (The last three characters --x mean that "others/world" only have execute permissions, but no read permissions. A web server runs as an "other" user and needs read access to serve an HTML file).
+
+What is wrong with this command? wget -O - [https://biscuits.com/biscuit.jpg](https://biscuits.com/biscuit.jpg)
+
+    The JPEG should be saved into a file.
+    (The -O - flag tells wget to output the downloaded file directly to standard output/the terminal. Spitting raw binary image data into the terminal will garble the screen).
+
+What command will search all your files for lines containing start of line, then any number of spaces, then the string "born"?
+
+    grep "^ *born" *
+    (^ means start of line,  * means a space repeated zero or more times, and born is the literal string).
+
+If a program is not in the directories listed in the "PATH" environment variable:
+
+    It can be run by typing its absolute file path.
+    (Or its relative path, such as /home/user/myprogram or ./myprogram).
+
+On Linux, when you type a normal command, it should be in the PATH to run. Yet when you run ps -f you see a program running that is not in the PATH. How can this happen?
+
+    You can run programs that are not in the PATH.
+
+Compile-time binding works only on a:
+
+    Single user, single process system.
+    (Compile-time binding hardcodes exact physical memory addresses into the executable. If multiple processes ran at once, they would try to use the exact same memory locations and crash).
+
+As a result of the "unused RAM is wasted RAM" idea, we may:
+
+    Keep data from terminated processes in memory. And pre-load processes that may be run later.
+
+In my Shakespeare directory, you want to count on how many lines the string "King" appears in Shakespeare. Which of the following will answer that question?
+
+    grep King */act* | wc -l
+    (grep outputs every line matching "King", and piping it to wc -l counts the total number of those matching lines across all files).
+
+What will this Shell script do? for i in * \n do \n rm i \n done
+
+    Remove a file called i, perhaps multiple times.
+    (Because the script says rm i instead of rm $i, it does not evaluate the variable. It literally tries to delete a file named the letter "i" for every file in the directory).
+
+One of these is true.
+
+    A command-line system is easier to automate than a GUI system.
+
+This command: sed -e 's|<|\&lt;|g'
+
+    is displaying the start of HTML tags but not getting them interpreted.
+    (It converts the < character into the HTML entity &lt;, which forces a web browser to display it as literal text rather than interpreting it as code).
+
+If we have to remove a page from memory, what do we do?
+
+    Sometimes write it to disk, sometimes discard it completely.
+    (If the page was modified (dirty), it must be saved to the disk. If it is read-only code that hasn't changed, it can just be discarded since a copy already exists on the hard drive).
+
+A user tries to start a program on a single-user, multiple-process system. Why is it not practical for the OS to say to the user: "I'm sorry, another program is occupying memory space 7000-8000. Please terminate the other program before running your program"
+
+    The user will not understand this message.
+
+I am in the directory /stuff/and/things and I type: cd ../../../more/things - What directory am I in now?
+
+    /more/things
+    (The first .. goes to and, the second to stuff, the third to the root /. Then it goes into /more/things).
+
+The commands "cd" followed by "cd public_html" followed by "mkdir ../stuff" make a directory called:
+
+    $HOME/stuff
+    (Typing cd by itself takes you to $HOME. Then you go into public_html. Making a directory in .. (the parent directory) puts it back in $HOME).
+
+What is this script doing? grep string file > /dev/null \n if test "$?" = "0"
+
+    Testing whether or not the string occurs in the file, without listing the lines on which it does.
+    (The > /dev/null part throws away the visible output, and $? checks the exit code of grep to see if a match was quietly found).
+
+Only one of the following makes any kind of sense as a possible permission field for a UNIX file. Which one?
+
+    -r--------
+    (This gives the owner read access and gives nobody else any access. This is a standard and sensible permission for sensitive files like private SSH keys).
+
+Typing the command man man > man does what?
+
+    Stores the manual page for "man" in a file with a terrible filename.
+
+What will this shell script do? ls$1
+
+    Probably fail unless arguments are blank.
+    (If you pass an argument like -l, the script evaluates as ls-l without a space, which will result in a "command not found" error. If $1 is blank, it just evaluates as ls, which works).
+
+On a multi-user system, when one user's program divides by zero:
+
+    An interrupt is generated and the program is terminated.
+
+We are searching for text in chapters of a book, called names like chap17.html. One of these is definitely not right:
+
+    grep Scotland \*chap*html
+    (The backslash escapes the first star, meaning the shell will literally look for a file whose name begins with an asterisk character, rather than treating it as a wildcard).
