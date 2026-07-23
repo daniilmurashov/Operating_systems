@@ -28,7 +28,7 @@ This calculates the disk usage (du) for items in the current directory, summariz
 Bash
 
 #!/bin/bash
-du -sk * | sort -n
+du -sk * | sort -n or just du | sort -n
 
 (Note: If the Einstein test strictly wants ONLY sub-directories and no individual files, use du -sk */ | sort -n instead).
 grep2.sh
