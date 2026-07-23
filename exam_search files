@@ -1,0 +1,33 @@
+#!/bin/bash
+
+# 1. Change to the Einstein testing directory
+cd /shared/humphrys/shakespeare 
+
+# 2. Define the function to make the output clickable
+clickable()
+{
+ while read line
+ do
+  # Extract everything BEFORE the first colon (the filename)
+  file=`echo "$line" | cut -d ':' -f 1`
+  
+  # Extract everything AFTER the first colon (the actual text hit)
+  # -f 2- means field 2 and everything after it
+  hit=`echo "$line" | cut -d ':' -f 2-`
+ 
+  # Apply the absolute Einstein prefix so the links work from your $HOME folder
+  echo "<a href='/shared/humphrys/shakespeare/$file'>$file</a>: $hit <br>"
+ done
+}
+
+# 3. Redirect all subsequent script output to the target file
+exec > "$HOME/gweb.html"
+
+# 4. Output the HTML preformatted tag
+echo "<pre>"
+
+# 5. Search, escape HTML brackets so they print literally, and pipe to the clickable function
+grep -i "$1" */*html | sed -e 's/</\&lt;/g' -e 's/>/\&gt;/g' | clickable
+
+# 6. Close the preformatted tag
+echo "</pre>"
