@@ -1,0 +1,144 @@
+1. The Silent grep Script
+
+The Code:
+Bash
+
+grep string file > /dev/null 
+if test "$?" = "0" 
+then ...
+
+What's going on: This script is silently checking if a word exists in a file before running the next part of the code.
+
+    grep string file: Searches for the word "string" inside "file".
+
+    > /dev/null: This redirects the output to the system's "black hole." It prevents the actual matched text from printing to the screen.
+
+    $?: This is a special shell variable. It stores the exit status of the very last command that ran (in this case, grep). If grep finds the string, it exits with a success code of 0. If it fails to find it, it exits with 1.
+
+    test "$?" = "0": This checks if the previous command was successful.
+
+2. Shell Conditional: Positional Parameters
+
+The Code: if test "$1" = "1"
+What's going on: This is true if the first argument passed to the script is the number 1.
+
+    In shell scripting, $1, $2, $3, etc., represent the arguments a user types after the script name.
+
+    If your script is named run.sh, and the user types ./run.sh 1, then $1 becomes 1, and the condition is true. If they type ./run.sh start, $1 is "start", and it's false.
+
+3. Swapping and Address Binding
+
+The Question: Swapping a process or part of a process to disk works with...
+The Concept: It requires run-time binding.
+
+    Compile-time binding: Memory addresses are permanently baked into the code.
+
+    Load-time binding: Addresses are assigned exactly once when the program starts.
+
+    Run-time binding: Addresses can be translated on the fly while the program runs.
+
+    Why this matters: If the OS swaps a program out to the hard drive to free up RAM, and later pulls it back into RAM, it almost certainly won't go back into the exact same physical memory slots. Run-time binding (usually handled by a hardware chip called the Memory Management Unit, or MMU) allows the program to function regardless of where it physically sits in RAM.
+
+4. Re-compiling for Memory Binding
+
+The Question: With compile-time binding, the memory locations used can be changed if the program is re-compiled. Why does the OS not do this?
+The Concept: The OS cannot recompile the program because the source code is usually not available on the machine.
+
+    Compiling turns human-readable source code (like C++ or Java) into binary machine code. When you download a program, you only get the binary. The OS can't reverse-engineer and rebuild it just to shift its memory footprint.
+
+5. Assembled, Compiled, Written
+
+The Concept: This refers to the lifecycle of creating a program, usually going from highest human abstraction to lowest machine level:
+
+    Written: The programmer writes the source code in a high-level language (like C).
+
+    Compiled: A compiler translates that source code into lower-level assembly language or object code.
+
+    Assembled: An assembler translates the assembly code into raw, binary machine code that the CPU can actually execute.
+
+6. The Infinite Loop (Stack Overflow)
+
+The Code:
+JavaScript
+
+function f() { f(); } 
+f();
+
+What's going on: This program will crash due to a Stack Overflow.
+
+    This is a recursive function (a function that calls itself) with no base case (no rule telling it when to stop).
+
+    Every time a function is called, the OS allocates a small chunk of memory on the "call stack" to keep track of where to return to. Because it never stops calling itself, it rapidly consumes all available stack memory until the OS forcibly terminates the program to protect the system.
+
+7. Paging vs. Swapping
+
+The Concept: Paging is a more granular, modern form of swapping.
+
+    Swapping (Traditional): Moving an entire process (like your whole web browser) from RAM to the hard drive when memory is full. It's slow and inefficient.
+
+    Paging: Breaking a process's memory down into tiny, equal-sized chunks called pages (usually 4KB). The OS can move just the inactive pieces of a program to the disk, leaving the active pieces in RAM.
+
+8. How the OS Regains Control
+
+The Question: When an OS runs a program, it starts the CPU executing that stream of instructions. How does the OS ever get control of the machine back?
+The Concept: Through Hardware Interrupts (specifically, the Timer Interrupt).
+
+    When user code is running, the OS is technically paused. To stop a program from hogging the CPU forever, the motherboard has a physical clock circuit.
+
+    Every few milliseconds, this clock sends a physical electrical signal (a timer interrupt) to the CPU.
+
+    The CPU is hardwired to immediately pause the user's program and jump back into the OS's scheduler code, allowing the OS to decide who gets to use the CPU next.
+
+9. The Buggy Script
+
+The Code:
+Bash
+
+for i in * 
+do
+rm i 
+done
+
+What's going on: This script is broken and will only attempt to delete a file literally named "i".
+
+    for i in * loops through every file in the directory, assigning the filename to the variable i.
+
+    However, the command inside the loop is rm i. Because it lacks a dollar sign, the shell treats "i" as raw text, not a variable.
+
+    To actually delete the files, the script should be written as rm $i.
+
+10. Unusual UNIX File Permissions
+
+The Options: ----r-xr-x, -rwx---r-x, -rwxr-x---, -rwxr-xr-x, -rwx------
+The Concept: The most unusual one is -rwx---r-x (or ----r-xr-x depending on exactly what your professor emphasized, but let's look at the logic).
+
+    Permissions read left to right: Owner | Group | Others (World)
+
+    -rwx---r-x is highly unusual because it grants full rights to the Owner, zero rights to the Group, but Read/Execute rights to World/Everyone. In security, trust usually flows strictly outward. If a random user (World) is allowed to read it, it makes no sense to ban the file's specific Group from reading it.
+
+    (Note: ----r-xr-x is also bizarre because it means the Owner is locked out of their own file while everyone else can read it, but the group anomaly above is a classic OS trick question).
+
+11. Regex Search
+
+The Question: Search all files for the start of line, then any number of spaces, then "born".
+The Concept: The correct command is grep "^ *born" *.
+Here is the regex breakdown:
+
+    ^ : Anchors the search to the start of the line.
+
+      (space) : Looks for a space character.
+
+    * : A modifier meaning "zero or more of the previous character". So  * means "any number of spaces, including none."
+
+    born : The exact text to match.
+
+    * (at the end) : The wildcard telling grep to look inside all files in the current directory.
+
+12. Removing a Page from Memory
+
+The Question: If we have to remove a page from memory, what do we do?
+The Concept: It depends on whether the page is "clean" or "dirty."
+
+    If the program has modified the data since it was loaded (a dirty page), the OS must write it to the disk so the changes aren't lost.
+
+    If the data hasn't been touched since it was loaded from the hard drive (a clean page), the OS can simply discard it completely. There's no need to write it to disk, because an identical copy is already sitting on the hard drive.
